@@ -87,52 +87,42 @@
             <button class="btn buy-now">Buy Now</button>
         </section>
     </main>
-
     <footer>
+        <script>
+            document.getElementById('ml-form').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+    
+                const userId = document.getElementById('user_id').value;
+                const zoneId = document.getElementById('zone_id').value;
+    
+                // Validate Mobile Legends ID with API
+                const apiUrl = `https://api.isan.eu.org/nickname/ml?id=${userId}&zone=${zoneId}`;
+    
+                fetch(apiUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("ID Game is wrong");
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            const nickname = data.name || "Unknown";
+                            document.getElementById('nickname-result').innerText = `Nickname: ${nickname}`;
+                        } else {
+                            document.getElementById('nickname-result').innerText = "ID Game is wrong.";
+                        }
+                    })
+                    .catch(error => {
+                        document.getElementById('nickname-result').innerText = error.message;
+                    });
+            });
+        </script>
         <p>© 2025 Shensi Topup. All rights reserved.</p>
         <div class="socials">
             <a href="https://t.me/Shensi_sn">Telegram</a>
             <a href="https://www.facebook.com/share/1BwUSgv5Nz/?mibextid=wwXIfr">Facebook</a>
         </div>
     </footer>
-
-    <script>
-        document.getElementById('ml-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form submission
-
-            const userId = document.getElementById('user_id').value;
-            const zoneId = document.getElementById('zone_id').value;
-            const resultDiv = document.getElementById('nickname-result');
-            
-            // Clear previous results
-            resultDiv.innerText = '';
-            
-            // Show loading indicator
-            resultDiv.innerText = 'Loading...';
-
-            // Validate Mobile Legends ID with API
-            const apiUrl = `https://api.isan.eu.org/nickname/ml?id=${userId}&zone=${zoneId}`;
-
-            fetch(apiUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        const nickname = data.name || "Unknown";
-                        resultDiv.innerText = `Nickname: ${nickname}`;
-                    } else {
-                        resultDiv.innerText = "ID Game is wrong.";
-                    }
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                    resultDiv.innerText = "An error occurred. Please try again.";
-                });
-        });
-    </script>
 </body>
 </html>
